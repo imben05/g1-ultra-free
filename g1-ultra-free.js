@@ -19,16 +19,20 @@ var TEST_MAP = [
   { from: "g1.ios.2tb.ai.m",  to: "g1.ai.ultra.3months_ip_90p.acq", label: "Nút AI Pro 5 TB (Tháng)" },
   { from: "g1.ios.20tb.m.v2", to: "g1.ios.30tb.m",                  label: "Nút Ultra 20 TB (Tháng)" },
 
-  /* 5 nút tab HÀNG NĂM (nếu gạt sang tab Năm để thử thêm) */
+  /* 5 nút tab HÀNG NĂM (đặt 2tb.ai.a trước 2tb.a để không trùng tiền tố) */
+  { from: "g1.ios.2tb.ai.a",  to: "g1.ai.ultra.1month_ip_90p.acq",  label: "Nút AI Pro 5 TB (Năm)" },
   { from: "g1.ios.30gb.a",    to: "g1.ai.pro",                      label: "Nút 30 GB (Năm)" },
   { from: "g1.ios.100gb.a",   to: "g1.30tb",                        label: "Nút 100 GB (Năm)" },
   { from: "g1.ios.helium.a",  to: "g1.ios.30tb.ai.pro.m.v2",        label: "Nút AI Plus 400 GB (Năm)" },
-  { from: "g1.ios.2tb.a",     to: "g1.20tb.1month_eft",             label: "Nút 2 TB (Năm)" },
-  { from: "g1.ios.2tb.ai.a",  to: "g1.ai.ultra.1month_ip_90p.acq",  label: "Nút AI Pro 5 TB (Năm)" }
+  { from: "g1.ios.2tb.a",     to: "g1.20tb.1month_eft",             label: "Nút 2 TB (Năm)" }
 ];
 
 function escHtml(s) {
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function escRe(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function run() {
@@ -43,12 +47,16 @@ function run() {
 
   for (var i = 0; i < TEST_MAP.length; i++) {
     var item = TEST_MAP[i];
-    if (out.indexOf(item.from) === -1) continue;
-    var parts = out.split(item.from);
-    var cnt = parts.length - 1;
-    out = parts.join(item.to);
-    applied.push({ label: item.label, from: item.from, to: item.to, count: cnt });
-    console.log("[g1-ultra-free] " + item.label + ": " + item.from + " -> " + item.to + " (x" + cnt + ")");
+    var re = new RegExp(escRe(item.from) + "(?![a-zA-Z0-9._-])", "g");
+    var cnt = 0;
+    out = out.replace(re, function () {
+      cnt++;
+      return item.to;
+    });
+    if (cnt > 0) {
+      applied.push({ label: item.label, from: item.from, to: item.to, count: cnt });
+      console.log("[g1-ultra-free] " + item.label + ": " + item.from + " -> " + item.to + " (x" + cnt + ")");
+    }
   }
 
   if (applied.length === 0) {
