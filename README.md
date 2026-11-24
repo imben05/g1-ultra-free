@@ -5,7 +5,7 @@ Module Shadowrocket (iOS) tổng hợp 10 ứng viên mã **Google AI Ultra 30 T
 ## Link cài Module (Shadowrocket → Cấu hình → Modules → `+`)
 
 ```
-https://raw.githubusercontent.com/nmchien123/g1-ultra-free/main/g1-ultra-free.sgmodule
+https://raw.githubusercontent.com/imben05/g1-ultra-free/main/g1-ultra-free.sgmodule
 ```
 
 ## Bảng ánh xạ nút (v2.0)
